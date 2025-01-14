@@ -1,0 +1,35 @@
+using System;
+
+class Program
+{
+    // Function n^2
+    static long nSquared(int n)
+    {
+        return n * n;
+    }
+
+    // Function 2^n / 4
+    static double twoPowerNOverFour(int n)
+    {
+        return Math.Pow(2, n) / 4;
+    }
+
+    static void Main()
+    {
+        // set of n values 
+        int[] nValues = { 10, 20, 30, 40, 50, 100, 200, };
+
+        // header for the output
+        Console.WriteLine("n\t n^2 Value\t\t 2^n/4 Value");
+
+        // work out and display values for both functions
+        foreach (int n in nValues)
+        {
+            long nSquaredValue = nSquared(n);
+            double twoPowerNOverFourValue = twoPowerNOverFour(n);
+
+            // results
+            Console.WriteLine($"{n}\t {nSquaredValue}\t\t {twoPowerNOverFourValue:F3}");
+        }
+    }
+}
