@@ -36,7 +36,7 @@ public class WeightedGraph
         WeightedAdjacencyList = new Dictionary<string, List<(string, int)>>();
     }
 
-    // Add a weighted edge between two nodes
+   // Add a weighted edge between two nodes
     public void AddEdge(string node1, string node2, int weight)
     {
         if (!WeightedAdjacencyList.ContainsKey(node1))
@@ -53,7 +53,7 @@ public class WeightedGraph
     }
 }
 
-// BFT Algorithm for Unweighted Graph
+ // BFT Algorithm for Unweighted Graph
 public class BFTAlgorithm
 {
     public static double FindInfluenceScore(Graph graph, string startNode)
@@ -84,7 +84,7 @@ public class BFTAlgorithm
             }
         }
 
-        // Calculate the influence score
+       // Calculate the influence score
         double sumOfDistances = 0;
         int nodeCount = graph.AdjacencyList.Count;
         foreach (var distance in distances.Values)
@@ -104,7 +104,7 @@ public class DijkstraAlgorithm
 {
     public static double ComputeInfluenceScore(WeightedGraph graph, string startNode)
     {
-        // Dijkstra's algorithm to calculate shortest path distances
+          // Dijkstra's algorithm to calculate shortest path distances
         Dictionary<string, int> distances = new Dictionary<string, int>();
         PriorityQueue<string, int> priorityQueue = new PriorityQueue<string, int>();
 
@@ -130,7 +130,7 @@ public class DijkstraAlgorithm
             }
         }
 
-        // Calculate the influence score
+        // Calculate influence score
         double sumOfDistances = 0;
         int nodeCount = graph.WeightedAdjacencyList.Count;
         foreach (var distance in distances.Values)
@@ -189,14 +189,14 @@ class Program
         graph.AddEdge("Gloria", "Fred");
         graph.AddEdge("Harry", "Gloria");
 
-        // Display the graph
+        // Display graph
         Console.WriteLine("Nodes in the graph:");
         foreach (var graphNode in graph.AdjacencyList.Keys)
         {
             Console.WriteLine($"- {graphNode}");
         }
 
-        // Calculate the influence score for a specific node
+        // Calculate influence score for a specific node
         Console.Write("Enter the node to calculate the influence score: ");
         string node = Console.ReadLine();
 
@@ -235,14 +235,14 @@ class Program
         graph.AddEdge("H", "I", 3);
         graph.AddEdge("I", "J", 3);
 
-        // Display the graph
+        // Display graph
         Console.WriteLine("Nodes in the graph:");
         foreach (var graphNode in graph.WeightedAdjacencyList.Keys)
         {
             Console.WriteLine($"- {graphNode}");
         }
 
-        // Calculate the influence score for a specific node
+          // Calculate influence score for a specific node
         Console.Write("Enter the node to calculate the influence score: ");
         string node = Console.ReadLine();
 
