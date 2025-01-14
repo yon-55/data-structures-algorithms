@@ -1,0 +1,146 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+public class BinPacking
+{
+    // Bin Utilisation (maximize used space in bins)
+    public static double BinUtilisationFitness(List<List<double>> bins, double binCapacity)
+    {
+        double totalCapacityUsed = 0;
+        int totalBinsUsed = bins.Count;
+
+        foreach (var bin in bins)
+        {
+            totalCapacityUsed += bin.Sum();
+        }
+
+        return totalCapacityUsed / (totalBinsUsed * binCapacity);
+    }
+
+    // Randomly distribute blocks into bins
+    public static List<List<double>> RandomDistribution(List<double> blocks, double binCapacity)
+    {
+        Random rand = new Random();
+        List<List<double>> bins = new List<List<double>>();
+
+        foreach (double block in blocks)
+        {
+            bool placed = false;
+
+            // Try placing the block in any existing bin if possible
+            foreach (var bin in bins)
+            {
+                if (bin.Sum() + block <= binCapacity)
+                {
+                    bin.Add(block);
+                    placed = true;
+                    break;
+                }
+            }
+
+            // If the block cannot fit in any bin, create a new bin
+            if (!placed)
+            {
+                bins.Add(new List<double> { block });
+            }
+        }
+
+        return bins;
+    }
+
+    // Random Mutation Hill Climbing (RMHC)
+    public static List<List<double>> RandomMutationHillClimbing(List<List<double>> bins, double binCapacity, int maxIterations)
+    {
+        Random rand = new Random();
+        List<List<double>> currentSolution = bins;
+        double currentFitness = BinUtilisationFitness(currentSolution, binCapacity);
+
+        for (int i = 0; i < maxIterations; i++)
+        {
+            // Randomly pick a bin to mutate
+            int binIndex = rand.Next(currentSolution.Count);
+            List<double> selectedBin = currentSolution[binIndex];
+
+            // Randomly pick a block from the selected bin and move 
+            if (selectedBin.Count > 0)
+            {
+                double blockToMove = selectedBin[rand.Next(selectedBin.Count)];
+                selectedBin.Remove(blockToMove);  // Remove the block from the bin
+
+                // Try placing the block in another bin
+                bool blockPlaced = false;
+                foreach (var bin in currentSolution)
+                {
+                    if (bin.Sum() + blockToMove <= binCapacity)
+                    {
+                        bin.Add(blockToMove);
+                        blockPlaced = true;
+                        break;
+                    }
+                }
+
+                // If not placed, create a new bin
+                if (!blockPlaced)
+                {
+                    currentSolution.Add(new List<double> { blockToMove });
+                }
+
+                // Calculate fitness of new solution
+                double newFitness = BinUtilisationFitness(currentSolution, binCapacity);
+
+                // If the new solution is better (more utilization), keep it
+                if (newFitness > currentFitness)
+                {
+                    currentFitness = newFitness;
+                }
+                else
+                {
+                    // put the block back to its original bin
+                    selectedBin.Add(blockToMove);
+                }
+            }
+        }
+
+        return currentSolution;
+    }
+
+    // Display bins and their contents
+    public static void DisplayBins(List<List<double>> bins)
+    {
+        Console.WriteLine("Bins and their contents:");
+        int binIndex = 1;
+        foreach (var bin in bins)
+        {
+            Console.WriteLine($"Bin {binIndex++}: {string.Join(", ", bin)} (Total: {bin.Sum()} cm)");
+        }
+    }
+
+    public static void Main(string[] args)
+    {
+        // Initialise the block heights
+        List<double> blocks = new List<double> {
+            55.44, 15.12, 0.77, 3.1, 95.24, 89.59, 7.12, 58.77, 78.98,
+            55.76, 30.34, 17.5, 44.05, 74.76, 28.4, 96.55, 87.78,
+            65.56, 72.91, 39.74, 39.52, 38.72, 8.12, 32.31, 12.28,
+            52.15, 89.93, 15.9, 3.37, 2.18
+        };
+
+        double binCapacity = 130;  // Bin capacity = 130 cm
+        int maxIterations = 1000;  // Number of iterations for RMHC
+
+        // Randomly distribute blocks into bins
+        List<List<double>> initialSolution = RandomDistribution(blocks, binCapacity);
+        Console.WriteLine("Initial Solution:");
+        DisplayBins(initialSolution);
+
+        // Random Mutation Hill Climbing to optimise the packing
+        List<List<double>> optimizedSolution = RandomMutationHillClimbing(initialSolution, binCapacity, maxIterations);
+        Console.WriteLine("\nOptimised Solution after RMHC:");
+        DisplayBins(optimizedSolution);
+
+        // Evaluate the fitness of the optimised solution
+        double fitness = BinUtilisationFitness(optimizedSolution, binCapacity);
+        Console.WriteLine("\nFitness of Optimisxed Solution (Bin Utilisation): " + fitness);
+    }
+}
